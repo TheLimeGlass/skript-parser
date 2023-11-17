@@ -45,8 +45,8 @@ public class SecCategory extends CodeSection {
     @Override
     public Optional<? extends Statement> walk(TriggerContext ctx) {
         Variables.setVariable("the_number", config.getValue("number"), null, false);
-        Variables.setVariable("multiple", String.join(";", config.getStringList("multiple")), null, false);
-        return Optional.of(config.getSection("die"));
+        Variables.setVariable("multiple", String.join(";", config.getStringList("multiple").orElse(new String[0])), null, false);
+        return config.getSection("die");
     }
 
     @Override
