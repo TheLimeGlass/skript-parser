@@ -88,7 +88,7 @@ public class SkriptRegistration {
      * Construct a SkriptRegistration around a SkriptAddon and the defined SkriptLogger to use.
      * 
      * @param registerer The SkriptAddon that this SkriptRegistration will be referencing.
-     * @parm logger The SkriptLogger used in the registration process.
+     * @param logger the SkriptLogger used in the registration process.
      */
     public SkriptRegistration(SkriptAddon registerer, SkriptLogger logger) {
         this.registerer = registerer;
@@ -170,6 +170,20 @@ public class SkriptRegistration {
      */
     public <C extends Expression<T>, T> ExpressionRegistrar<C, T> newExpression(Class<C> c, Class<T> returnType, boolean isSingle, String... patterns) {
         return new ExpressionRegistrar<>(c, returnType, isSingle, patterns);
+    }
+
+    /**
+     * Registers an {@link Expression} with the isSingle set to true by default.
+     * Mainly so you can override with {@link Expression#isSingle()}
+     * 
+     * @param c the Expression's class
+     * @param returnType the Expression's return type
+     * @param patterns the Expression's patterns
+     * @param <C> the Expression
+     * @param <T> the Expression's return type
+     */
+    public <C extends Expression<T>, T> void addExpression(Class<C> c, Class<T> returnType, String... patterns) {
+        newExpression(c, returnType, true, patterns).register();
     }
 
     /**
@@ -860,7 +874,7 @@ public class SkriptRegistration {
     /**
      * Add a consumer to be called when this SkriptRegistration finishes registration.
      * 
-     * @param consumer The consumer with the SkriptAddon reference.
+     * @param consumer the consumer with the SkriptAddon reference.
      */
     public void onFinishRegistration(Consumer<SkriptAddon> consumer) {
         finishConsumers.add(consumer);

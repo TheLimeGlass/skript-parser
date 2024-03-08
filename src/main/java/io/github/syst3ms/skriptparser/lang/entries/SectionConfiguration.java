@@ -128,11 +128,12 @@ public class SectionConfiguration {
 	 * This can only be used when you register your option as a {@link Builder#addLiteral(String, Class) literal},
 	 * otherwise, the option will likely be parsed as a String and throw an exception.
 	 * Options that allow literal lists are saved as an array.
-	 * 
-	 * @param key the key of the node.
-	 * @param cls the class to cast to.
-	 * @return the value cast to the given class.
-	 * @param <T> the type of the return value.
+	 * Returns an empty Optional if the key is not present. This is only possible for optional keys.
+	 *
+	 * @param key the key
+	 * @param cls the class to cast to
+	 * @return the value cast to the given class, or an empty Optional if the key was not specified
+	 * @param <T> the type of the value
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> Optional<T> getValue(String key, Class<T> cls) {
@@ -144,15 +145,26 @@ public class SectionConfiguration {
 		return Optional.of((T) result);
 	}
 
-	@Nullable
+	/**
+	 * @param key the key
+	 * @return the option value, or an empty Optional if the key was not specified
+	 */
 	public Optional<String> getString(String key) {
 		return getValue(key, String.class);
 	}
 
+	/**
+	 * @param key the key
+	 * @return the list values, or an empty Optional if the key was not specified
+	 */
 	public Optional<String[]> getStringList(String key) {
 		return getValue(key, String[].class);
 	}
 
+	/**
+	 * @param key the key
+	 * @return the enclosed code section, or an empty Optional if the key was not specified
+	 */
 	public Optional<CodeSection> getSection(String key) {
 		return getValue(key, CodeSection.class);
 	}
