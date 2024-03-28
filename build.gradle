@@ -50,7 +50,7 @@ publishing {
             gpr(MavenPublication) {
                 from(components.java)
                 version = version
-                groupId = 'org.scrollang'
+                groupId = 'org.scrolllang'
                 def releases = 'skript-parser' // Don't modify
                 def snapshots = 'skript-parser-dev' // Don't modify
                 artifactId = version.contains('-dev') ? snapshots : releases
