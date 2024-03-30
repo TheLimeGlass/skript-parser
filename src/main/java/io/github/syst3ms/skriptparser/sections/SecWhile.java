@@ -26,6 +26,7 @@ import java.util.Optional;
  * @author Mwexim
  */
 public class SecWhile extends CodeSection implements Continuable, SelfReferencing {
+
     static {
         Parser.getMainRegistration().addSection(
                 SecWhile.class,
@@ -39,8 +40,10 @@ public class SecWhile extends CodeSection implements Continuable, SelfReferencin
 
     @Override
     public boolean loadSection(FileSection section, ParserState parserState, SkriptLogger logger) {
+        if (!super.loadSection(section, parserState, logger))
+            return false;
         super.setNext(this);
-        return super.loadSection(section, parserState, logger);
+        return true;
     }
 
     @SuppressWarnings("unchecked")
@@ -53,11 +56,10 @@ public class SecWhile extends CodeSection implements Continuable, SelfReferencin
     @Override
     public Optional<? extends Statement> walk(TriggerContext ctx) {
         Optional<? extends Boolean> cond = condition.getSingle(ctx);
-        if (cond.isEmpty() || !cond.get().booleanValue()) {
+        if (cond.isEmpty() || !cond.get().booleanValue())
             return Optional.ofNullable(actualNext);
-        } else {
-            return getFirst();
-        }
+
+        return getFirst();
     }
 
     @Override
@@ -80,4 +82,5 @@ public class SecWhile extends CodeSection implements Continuable, SelfReferencin
     public String toString(TriggerContext ctx, boolean debug) {
         return "while " + condition.toString(ctx, debug);
     }
+
 }

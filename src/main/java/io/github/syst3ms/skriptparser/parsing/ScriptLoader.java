@@ -73,6 +73,13 @@ public class ScriptLoader {
                 trig.ifPresent(t -> {
                     logger.setLine(logger.getLine() + ((FileSection) element).length());
                     unloadedTriggers.add(t);
+                    //SkriptEvent skriptEvent = t.getTrigger().getEvent();
+                    /* TODO
+                    validate that this is a function
+                    parse & save it
+                    have a separate parser to parse a whole folder that does this step before anything
+                     */
+                    //System.out.println(skriptEvent);
                 });
             } else {
                 logger.error(
