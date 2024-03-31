@@ -947,4 +947,9 @@ public class SkriptRegistration {
             return containsRegex ? Math.min(priority, 3) : priority;
         }
     }
+
+    public SkriptLogger getLogger() {
+        return logger;
+    }
+
 }

@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import io.github.syst3ms.skriptparser.Parser;
+import io.github.syst3ms.skriptparser.structures.functions.FunctionParameter;
 import io.github.syst3ms.skriptparser.types.Type;
 import io.github.syst3ms.skriptparser.types.TypeManager;
 import io.github.syst3ms.skriptparser.types.changers.Arithmetic;
@@ -172,11 +173,9 @@ public class DefaultRegistration {
                 })
                 .register();
 
-        registration.addType(
-                String.class,
-                "string",
-                "string@s",
-                new TypeSerializer<String>() {
+        registration.newType(String.class, "string", "string@s")
+                .toStringFunction(s -> s)
+                .serializer(new TypeSerializer<String>() {
                     @Override
                     public JsonElement serialize(Gson gson, String value) {
                         JsonObject json = new JsonObject();
@@ -188,8 +187,8 @@ public class DefaultRegistration {
                     public String deserialize(Gson gson, JsonElement element) {
                         return element.getAsJsonObject().get("string").getAsString();
                     }
-                }
-        );
+                })
+                .register();
 
         registration.newType(Boolean.class, "boolean", "boolean@s")
                 .literalParser(s -> {
@@ -218,8 +217,12 @@ public class DefaultRegistration {
                 .register();
 
         registration.newType(Type.class, "type", "type@s")
-                .literalParser(s -> TypeManager.getByExactName(s.toLowerCase()).orElse(null))
+                .literalParser(TypeManager::parseType)
                 .toStringFunction(Type::getBaseName)
+                .register();
+
+        registration.newType(FunctionParameter.class, "functionparameter", "functionparameter@s")
+                .toStringFunction(parameter -> parameter.getName() + ": " + parameter.getType().getName())
                 .register();
 
         registration.newType(Color.class, "color", "color@s")
@@ -381,6 +384,8 @@ public class DefaultRegistration {
                 return Optional.of(BigInteger.valueOf(n.longValue()));
             }
         });
+        registration.addConverter(Number.class, BigDecimal.class, n -> Optional.of(BigDecimal.valueOf(n.doubleValue())));
+        registration.addConverter(Number.class, BigInteger.class, n -> Optional.of(BigInteger.valueOf(n.longValue())));
 
         registration.addConverter(SkriptDate.class, Time.class, da -> Optional.of(Time.of(da)));
 

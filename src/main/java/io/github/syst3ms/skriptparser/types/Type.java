@@ -132,6 +132,10 @@ public class Type<T> {
         this.serializer = serializer;
     }
 
+    public boolean isPlural(String input) {
+        return input.equalsIgnoreCase(getPluralForm());
+    }
+
     public Class<T> getTypeClass() {
         return typeClass;
     }
@@ -142,6 +146,13 @@ public class Type<T> {
 
     public String[] getPluralForms() {
         return pluralForms;
+    }
+
+    /**
+     * @return strictly the plural form of the type, not including the regular form like {@link Type#getPluralForms()} does
+     */
+    public String getPluralForm() {
+        return pluralForms[1];
     }
 
     public Function<Object, String> getToStringFunction() {

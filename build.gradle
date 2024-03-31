@@ -13,8 +13,6 @@ compileJava.options.encoding = 'UTF-8'
 
 mainClassName = 'io.github.syst3ms.skriptparser.Parser'
 
-sourceCompatibility = 1.11
-
 repositories {
 	mavenCentral()
 }
@@ -57,6 +55,12 @@ publishing {
             }
         }
     }
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 jar {

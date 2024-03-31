@@ -9,6 +9,8 @@ import io.github.syst3ms.skriptparser.lang.lambda.ReturnSection;
 import io.github.syst3ms.skriptparser.log.ErrorType;
 import io.github.syst3ms.skriptparser.parsing.ParseContext;
 import io.github.syst3ms.skriptparser.parsing.SkriptParserException;
+import io.github.syst3ms.skriptparser.structures.functions.Function;
+import io.github.syst3ms.skriptparser.structures.functions.FunctionContext;
 import io.github.syst3ms.skriptparser.types.TypeManager;
 import io.github.syst3ms.skriptparser.types.conversions.Converters;
 import io.github.syst3ms.skriptparser.util.StringUtils;
@@ -31,6 +33,7 @@ public class EffReturn extends Effect {
                 "return %objects%"
         );
     }
+    private boolean isInFunction;
 
     private ReturnSection<?> section;
     private Expression<?> returned;
@@ -39,6 +42,14 @@ public class EffReturn extends Effect {
     public boolean init(Expression<?>[] expressions, int matchedPattern, ParseContext parseContext) {
         returned = expressions[0];
         var logger = parseContext.getLogger();
+        Optional<Class<? extends TriggerContext>> optionalContext = parseContext.getParserState().getCurrentContexts().stream().findFirst();
+        if (optionalContext.isPresent()) {
+            Class<? extends TriggerContext> currentContext = optionalContext.get();
+            if (currentContext.equals(FunctionContext.class)) {
+                isInFunction = true;
+                return true;
+            }
+        }
         var sec = Expression.getLinkedSection(parseContext.getParserState(), ReturnSection.class);
         if (sec.isEmpty()) {
             logger.error("Couldn't find a section matching this return statement", ErrorType.SEMANTIC_ERROR);
@@ -67,18 +78,29 @@ public class EffReturn extends Effect {
         if (!section.getReturnType().isAssignableFrom(returned.getReturnType())) {
             // The value is convertible but not in the trivial way
             returned = returned.convertExpression(section.getReturnType())
-                    .orElseThrow(() -> new SkriptParserException("Return value should be convertible at this stage"));
+                               .orElseThrow(() -> new SkriptParserException("Return value should be convertible at this stage"));
         }
         return true;
     }
 
     @Override
     protected void execute(TriggerContext ctx) {
+        /*if (isInFunction) {
+            FunctionContext functionContext = (FunctionContext) ctx;
+            Function<?> function = functionContext.getOwningFunction();
+            function.setReturnValue(returned.getValues(ctx));
+        } else throw new UnsupportedOperationException();*/
         throw new UnsupportedOperationException();
     }
 
     @Override
     public Optional<? extends Statement> walk(TriggerContext ctx) {
+        if (isInFunction) {
+            FunctionContext functionContext = (FunctionContext) ctx;
+            Function<?> function = functionContext.getOwningFunction();
+            function.setReturnValue(returned.getValues(ctx));
+            return Optional.empty(); // stop the trigger
+        }
         section.setReturned(returned.getValues(ctx));
         section.step(this);
         return Optional.of(section);
