@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import io.github.syst3ms.skriptparser.Parser;
+import io.github.syst3ms.skriptparser.lang.VariableString;
+import io.github.syst3ms.skriptparser.parsing.ParserState;
 import io.github.syst3ms.skriptparser.structures.functions.FunctionParameter;
 import io.github.syst3ms.skriptparser.types.Type;
 import io.github.syst3ms.skriptparser.types.TypeManager;
@@ -174,7 +176,6 @@ public class DefaultRegistration {
                 .register();
 
         registration.newType(String.class, "string", "string@s")
-                .literalParser(s -> s)
                 .toStringFunction(s -> s)
                 .serializer(new TypeSerializer<String>() {
                     @Override
