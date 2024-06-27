@@ -14,11 +14,11 @@ compileJava.options.encoding = 'UTF-8'
 mainClassName = 'io.github.syst3ms.skriptparser.Parser'
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 test {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 dependencies {
