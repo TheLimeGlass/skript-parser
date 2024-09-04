@@ -108,9 +108,9 @@ public class Parser {
                         .getCodeSource()
                         .getLocation()
                         .toURI()
-                    );
+                    ).getParent();
                 }
-                Path addonFolderPath = Paths.get(parserPath.getParent().toString(), "addons");
+                Path addonFolderPath = Paths.get(parserPath.toString(), "addons");
                 if (Files.isDirectory(addonFolderPath)) {
                     Files.walk(addonFolderPath)
                         .filter(Files::isRegularFile)
