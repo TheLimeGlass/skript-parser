@@ -61,6 +61,7 @@ public class Parser {
 
     /**
      * Starts the parser.
+     * 
      * @param mainPackages packages inside which all subpackages containing classes to load may be present. Doesn't need
      *                     to contain Skript's own main packages.
      * @param subPackages the subpackages inside which classes to load may be present. Doesn't need to contain Skript's
@@ -69,6 +70,21 @@ public class Parser {
      * @param standalone whether the parser tries to load addons (standalone) or not (library)
      */
     public static void init(String[] mainPackages, String[] subPackages, String[] programArgs, boolean standalone) {
+        init(mainPackages, subPackages, programArgs, standalone, null);
+    }
+
+    /**
+     * Starts the parser.
+     * 
+     * @param mainPackages packages inside which all subpackages containing classes to load may be present. Doesn't need
+     *                     to contain Skript's own main packages.
+     * @param subPackages the subpackages inside which classes to load may be present. Doesn't need to contain Skript's
+     *                    own subpackages.
+     * @param programArgs any other program arguments (typically from the command line)
+     * @param standalone whether the parser tries to load addons (standalone) or not (library)
+     * @param parserPath the path to the parser jar file. If null, the path will be inferred from the parser's location.
+     */
+    public static void init(String[] mainPackages, String[] subPackages, String[] programArgs, boolean standalone, @Nullable Path parserPath) {
         Skript skript = new Skript(programArgs);
         registration = new SkriptRegistration(skript);
         DefaultRegistration.register();
@@ -84,12 +100,14 @@ public class Parser {
                 FileUtils.loadClasses(FileUtils.getJarFile(Parser.class), mainPackage, subPackages);
             }
             if (standalone) {
-                Path parserPath = Paths.get(Parser.class
-                    .getProtectionDomain()
-                    .getCodeSource()
-                    .getLocation()
-                    .toURI()
-                );
+                if (parserPath == null) {
+                    parserPath = Paths.get(Parser.class
+                        .getProtectionDomain()
+                        .getCodeSource()
+                        .getLocation()
+                        .toURI()
+                    );
+                }
                 Path addonFolderPath = Paths.get(parserPath.getParent().toString(), "addons");
                 if (Files.isDirectory(addonFolderPath)) {
                     Files.walk(addonFolderPath)
