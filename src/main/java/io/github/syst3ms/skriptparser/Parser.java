@@ -9,6 +9,8 @@ import io.github.syst3ms.skriptparser.registration.SkriptRegistration;
 import io.github.syst3ms.skriptparser.util.ConsoleColors;
 import io.github.syst3ms.skriptparser.util.FileUtils;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
