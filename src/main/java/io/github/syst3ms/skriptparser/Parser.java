@@ -128,8 +128,8 @@ public class Parser {
                                     Class<?> mainClass = Class.forName(main, true, child);
                                     try {
                                         Method init = mainClass.getDeclaredMethod("initAddon");
-                                        init.invoke(null);
-                                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+                                        init.invoke(mainClass.getConstructor().newInstance());
+                                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IllegalArgumentException | InstantiationException | SecurityException ignored) {
                                     } finally {
                                         jar.close();
                                     }
