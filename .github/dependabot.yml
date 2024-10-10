@@ -1,0 +1,22 @@
+version: 2
+registries:
+  maven-github:
+    type: maven-repository
+    url: https://maven.pkg.github.com/ScrollLang
+    username: ${{ secrets.PACKAGES_USER }}
+    password: ${{ secrets.PACKAGES_KEY }}
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+        interval: "weekly"
+    labels:
+      - "dependencies"
+  - package-ecosystem: "gradle"
+    registries: "*"
+    directory: "/"
+    schedule:
+        interval: "daily"
+    labels:
+      - "dependencies"
+    open-pull-requests-limit: 10
