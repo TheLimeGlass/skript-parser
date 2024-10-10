@@ -29,19 +29,14 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
           distribution: 'microsoft'
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
-      - name: Build project
+      - name: make gradle wrapper executable
+        if: runner.os != 'Windows'
+        run: chmod +x ./gradlew
+      - name: build
         run: ./gradlew build
-      - name: Run tests
-        run: ./gradlew test
-      - name: Upload Nightly Build
+      - name: capture build artifacts
+        if: ${{ runner.os == 'Linux' && matrix.java == '21' }} # Only upload artifacts built from latest java on one OS
         uses: actions/upload-artifact@v4
-        if: success()
         with:
           name: skript-nightly
-          path: build/libs/**
+          path: build/libs/
