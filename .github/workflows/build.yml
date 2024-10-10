@@ -12,7 +12,7 @@ jobs:
   building:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: validate gradle wrapper
         uses: gradle/wrapper-validation-action@v1
       - name: Set up JDK
@@ -34,7 +34,7 @@ jobs:
         run: ./gradlew test
 
       - name: Upload Nightly Build
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: success()
         with:
           name: skript-nightly
